@@ -29,7 +29,7 @@ module Response = Cohttp.Response.Make(Cohttp_lwt_unix_io)
 let section = Lwt_log.Section.make "websocket_lwt"
 
 
-let () = openprerr_endline "WEBSOCKET TEST VERSION!!!"
+let () = prerr_endline "WEBSOCKET TEST VERSION!!!"
 let oc =
   let logfile = Sys.getenv "LWTLOGFILE" in
   open_out logfile
