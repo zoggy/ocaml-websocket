@@ -27,6 +27,12 @@ module Request = Cohttp.Request.Make(Cohttp_lwt_unix_io)
 module Response = Cohttp.Response.Make(Cohttp_lwt_unix_io)
 
 let section = Lwt_log.Section.make "websocket_lwt"
+let oc =
+  let logfile = Sys.getenv "LWTLOGFILE" in
+  open_out logfile
+
+let debug str = output_string oc str; flush oc
+
 exception HTTP_Error of string
 
 module Connected_client = struct
@@ -143,7 +149,6 @@ let with_connection ?(extra_headers = Cohttp.Header.init ())
           | `Invalid s -> Lwt.fail @@ Failure s) >>= fun response ->
       let status = C.Response.status response in
       let headers = C.Response.headers response in
-      prerr_endline (Cohttp.Header.to_string headers) ;
       if C.Code.(is_error @@ code_of_status status)
       then Lwt.fail @@ HTTP_Error C.Code.(string_of_status status)
       else if not (C.Response.version response = `HTTP_1_1
@@ -212,6 +217,7 @@ let establish_server
     let version = C.Request.version request in
     let headers = C.Request.headers request in
     let key = C.Header.get headers "sec-websocket-key" in
+    debug (Cohttp.Header.to_string headers) ;
     if not (
         version = `HTTP_1_1
         && meth = `GET
