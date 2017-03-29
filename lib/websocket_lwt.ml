@@ -27,7 +27,7 @@ module Request = Cohttp.Request.Make(Cohttp_lwt_unix_io)
 module Response = Cohttp.Response.Make(Cohttp_lwt_unix_io)
 
 let section = Lwt_log.Section.make "websocket_lwt"
-let () = exit 0
+
 let oc =
   let logfile = Sys.getenv "LWTLOGFILE" in
   open_out logfile
@@ -219,6 +219,7 @@ let establish_server
     let headers = C.Request.headers request in
     let key = C.Header.get headers "sec-websocket-key" in
     debug (Cohttp.Header.to_string headers) ;
+    let%lwt () = Lwt_unix.sleep 1. in
     if not (
         version = `HTTP_1_1
         && meth = `GET
