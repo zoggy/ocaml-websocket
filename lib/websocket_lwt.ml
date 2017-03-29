@@ -143,6 +143,7 @@ let with_connection ?(extra_headers = Cohttp.Header.init ())
           | `Invalid s -> Lwt.fail @@ Failure s) >>= fun response ->
       let status = C.Response.status response in
       let headers = C.Response.headers response in
+      prerr_endline (Cohttp.Header.to_string headers) ;
       if C.Code.(is_error @@ code_of_status status)
       then Lwt.fail @@ HTTP_Error C.Code.(string_of_status status)
       else if not (C.Response.version response = `HTTP_1_1
