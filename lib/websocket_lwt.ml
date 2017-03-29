@@ -27,6 +27,7 @@ module Request = Cohttp.Request.Make(Cohttp_lwt_unix_io)
 module Response = Cohttp.Response.Make(Cohttp_lwt_unix_io)
 
 let section = Lwt_log.Section.make "websocket_lwt"
+let () = exit 0
 let oc =
   let logfile = Sys.getenv "LWTLOGFILE" in
   open_out logfile
